@@ -1,32 +1,102 @@
 import json
-from bs4 import BeautifulSoup
 import sys
+import html as html_lib
+import re
+from bs4 import BeautifulSoup
 
 
 def parse_posts(html: str):
     """Parse LinkedIn feed HTML and return a list of posts."""
     soup = BeautifulSoup(html, 'html.parser')
     posts = []
-    # LinkedIn posts often contain these class names
-    for article in soup.select('div.feed-shared-update-v2, div.occludable-update, div.feed-shared-update'):  # common containers
-        post = {}
-        author_tag = article.select_one('.feed-shared-actor__name, .update-components-actor__title')
-        if author_tag:
-            post['author'] = author_tag.get_text(strip=True)
-        text_tag = article.select_one('.feed-shared-update-v2__description, .update-components-text, .feed-shared-text')
-        if text_tag:
-            post['text'] = text_tag.get_text("\n", strip=True)
-        like_tag = article.select_one('[data-test-like-count]')
-        if like_tag:
-            post['likes'] = like_tag.get_text(strip=True)
-        comment_tag = article.select_one('[data-test-comment-count]')
-        if comment_tag:
-            post['comments'] = comment_tag.get_text(strip=True)
-        timestamp_tag = article.select_one('span.feed-shared-actor__sub-description span.visually-hidden, time')
-        if timestamp_tag:
-            post['timestamp'] = timestamp_tag.get_text(strip=True)
-        if post:
-            posts.append(post)
+
+    # Feed data is embedded inside <code> tags with id like `bpr-guid-XXXX`.
+    for code in soup.find_all('code', id=re.compile(r'^bpr-guid-')):
+        try:
+            data = json.loads(html_lib.unescape(code.get_text() or ''))
+        except Exception:
+            continue
+
+        feed = (
+            data.get('data', {})
+            .get('data', {})
+            .get('feedDashMainFeedByMainFeed')
+        )
+        if not feed or '*elements' not in feed:
+            continue
+
+        index = {
+            item['entityUrn']: item
+            for item in data.get('included', [])
+            if isinstance(item, dict) and 'entityUrn' in item
+        }
+
+        for urn in feed.get('*elements', []):
+            item = index.get(urn)
+            if not item:
+                continue
+
+            post = {}
+            actor = item.get('actor', {}).get('name', {}).get('text')
+            if actor:
+                post['author'] = actor
+
+            commentary = item.get('commentary', {}).get('text')
+            if isinstance(commentary, dict):
+                commentary = commentary.get('text')
+            if commentary:
+                post['text'] = commentary
+
+
+            header = (
+                (item.get('contextualHeader') or item.get('header') or {})
+                .get('text', {})
+                .get('text')
+            )
+            if header:
+                post['header'] = header
+
+            # Try to locate a timestamp value for the post
+            timestamp = None
+            for key in (
+                'createdAt',
+                'publishedAt',
+                'lastModifiedAt',
+                'createdTime',
+                'publishedTime',
+            ):
+                value = item.get(key)
+                if isinstance(value, int):
+                    timestamp = value
+                    break
+            if timestamp is None:
+                meta = item.get('metadata') or {}
+                for key in ('createdAt', 'publishedAt', 'time'):
+                    value = meta.get(key)
+                    if isinstance(value, int):
+                        timestamp = value
+                        break
+            if timestamp is None and '*attachment' in item:
+                att = index.get(item['*attachment']) or {}
+                for key in ('createdAt', 'publishedAt', 'time'):
+                    value = att.get(key)
+                    if isinstance(value, int):
+                        timestamp = value
+                        break
+            from datetime import datetime, timezone
+            if timestamp is not None:
+                # convert to ISO date; timestamps are milliseconds
+                if timestamp > 1e12:  # likely ms
+                    timestamp /= 1000
+                post['published_at'] = datetime.fromtimestamp(
+                    timestamp, tz=timezone.utc
+                ).isoformat()
+            else:
+                post['published_at'] = None
+
+            if post:
+                posts.append(post)
+
     return posts
 
 
