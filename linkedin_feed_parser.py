@@ -92,7 +92,8 @@ def parse_posts(html: str):
                     timestamp, tz=timezone.utc
                 ).isoformat()
             else:
-                post['published_at'] = None
+                # if no timestamp was found, set current time to avoid null values
+                post['published_at'] = datetime.now(timezone.utc).isoformat()
 
             if post:
                 posts.append(post)
