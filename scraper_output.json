@@ -1,0 +1,71 @@
+{
+  "structured_data": {
+    "microdata": [],
+    "json-ld": [],
+    "opengraph": [],
+    "rdfa": [
+      {
+        "@id": "#a11y-notification",
+        "http://www.w3.org/1999/xhtml/vocab#role": [
+          {
+            "@id": "http://www.w3.org/1999/xhtml/vocab#region"
+          }
+        ]
+      }
+    ]
+  },
+  "posts": [
+    {
+      "id": "urn:li:ugcPost:7335852528649023488",
+      "author": "Bland",
+      "author_url": "https://www.linkedin.com/company/bland-ai/posts",
+      "text": "Today we’re excited to introduce Bland TTS, the first voice AI to cross the uncanny valley.\n\nSeveral months ago, our team solved one-shot style transfer of human speech. \n\nTo put it simply:\n\nFrom a single, brief MP3, you can now clone any voice, sound, or speaker’s style.\n\nYou can then take that clone and mix it with the style of any speaker’s voice while retaining the same tone, cadence, and pronunciations.\n\nThat means your AI voice-overs and conversational agents are not only far more realistic – but hyper controllable. \n\nWith Bland TTS:\n•Creatives can turn text into realistic sound effects or AI voice tracks with precise control over style and emotion.\n•Developers can plug in our TTS API to build voice apps fully customized to their liking.\n•Enterprises can launch AI-driven support lines that sound so natural — customers will save you as a contact (try talking to it on our site).\n\nCreatives, developers, or anyone curious can talk to it themselves on our site for free immediately at Bland.com \n\nFor enterprises, you can reach us directly at Bland.com/enterprise",
+      "header": "Y Combinator loves this",
+      "published_at": "2025-06-05T11:15:14.122646+00:00",
+      "like_count": 483,
+      "comment_count": 55,
+      "share_count": 54,
+      "reaction_counts": {
+        "LIKE": 377,
+        "EMPATHY": 48,
+        "PRAISE": 41,
+        "INTEREST": 15,
+        "ENTERTAINMENT": 1,
+        "APPRECIATION": 1
+      }
+    },
+    {
+      "id": "urn:li:ugcPost:7329192895909933056",
+      "author": "Brad Smith",
+      "author_url": "https://www.linkedin.com/in/bradsmi?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAAFqmHMBRvI7O6GyhdtaXPyuHZSa4aQUEnw",
+      "text": "I often sit down with Satya Nadella, my boss, and Microsoft’s third CEO—but rarely with microphones. In this episode of #ToolsAndWeapons, we talk about his journey from his early days playing cricket to leading Microsoft, the link between poetry and programming, and how the company is leading the next wave of technological transformation—redefining how we build and interact with technology. https://lnkd.in/eSx3R_vp",
+      "published_at": "2025-06-05T11:15:14.122696+00:00",
+      "like_count": 1002,
+      "comment_count": 33,
+      "share_count": 102,
+      "reaction_counts": {
+        "LIKE": 855,
+        "EMPATHY": 82,
+        "PRAISE": 44,
+        "INTEREST": 15,
+        "APPRECIATION": 5,
+        "ENTERTAINMENT": 1
+      }
+    },
+    {
+      "id": "urn:li:share:7336059596395950080",
+      "author": "Devan Baucom",
+      "author_url": "https://www.linkedin.com/in/devan-baucom?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAABMxTKsBSFepci_14pPH6MXiF2kT_EYewgg",
+      "text": "The engineer on the left uses AWS\n\nThe engineer on the right asked ChatGPT to \"Build an AWS clone with zero hallucinations\", and is now a billionaire\n\nFew understand this",
+      "header": "Chris Bakke likes this",
+      "published_at": "2025-06-05T11:15:14.122712+00:00",
+      "like_count": 74,
+      "comment_count": 36,
+      "share_count": 0,
+      "reaction_counts": {
+        "ENTERTAINMENT": 38,
+        "LIKE": 36
+      }
+    }
+  ]
+}
