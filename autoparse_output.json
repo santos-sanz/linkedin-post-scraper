@@ -1,0 +1,15 @@
+{
+  "microdata": [],
+  "json-ld": [],
+  "opengraph": [],
+  "rdfa": [
+    {
+      "@id": "#a11y-notification",
+      "http://www.w3.org/1999/xhtml/vocab#role": [
+        {
+          "@id": "http://www.w3.org/1999/xhtml/vocab#region"
+        }
+      ]
+    }
+  ]
+}
