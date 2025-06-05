@@ -37,16 +37,26 @@ def parse_posts(html: str):
                 continue
 
             post = {}
-            actor = item.get('actor', {}).get('name', {}).get('text')
+
+            # Basic identifiers
+            meta = item.get('metadata') or {}
+            post_id = meta.get('shareUrn') or item.get('entityUrn')
+            if post_id:
+                post['id'] = post_id
+
+            actor_data = item.get('actor') or {}
+            actor = actor_data.get('name', {}).get('text')
             if actor:
                 post['author'] = actor
+            author_url = (actor_data.get('navigationContext') or {}).get('actionTarget')
+            if author_url:
+                post['author_url'] = author_url
 
             commentary = item.get('commentary', {}).get('text')
             if isinstance(commentary, dict):
                 commentary = commentary.get('text')
             if commentary:
                 post['text'] = commentary
-
 
             header = (
                 (item.get('contextualHeader') or item.get('header') or {})
@@ -94,6 +104,24 @@ def parse_posts(html: str):
             else:
                 # if no timestamp was found, set current time to avoid null values
                 post['published_at'] = datetime.now(timezone.utc).isoformat()
+
+            # Social engagement counts
+            social = index.get(item.get('*socialDetail')) if '*socialDetail' in item else None
+            counts = index.get(social.get('*totalSocialActivityCounts')) if isinstance(social, dict) else None
+            if counts:
+                if isinstance(counts.get('numLikes'), int):
+                    post['like_count'] = counts['numLikes']
+                if isinstance(counts.get('numComments'), int):
+                    post['comment_count'] = counts['numComments']
+                if isinstance(counts.get('numShares'), int):
+                    post['share_count'] = counts['numShares']
+                rcounts = counts.get('reactionTypeCounts')
+                if isinstance(rcounts, list):
+                    post['reaction_counts'] = {
+                        r.get('reactionType'): r.get('count')
+                        for r in rcounts
+                        if isinstance(r, dict) and r.get('reactionType') and isinstance(r.get('count'), int)
+                    }
 
             if post:
                 posts.append(post)
